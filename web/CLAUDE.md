@@ -41,7 +41,7 @@ import { sanitizeError } from "@/lib/errors";
 ## Database Migrations
 
 - **Development:** `pnpm prisma migrate dev --name <description>`
-- **Production:** `pnpm prisma migrate deploy` (never use `migrate dev` in production)
+- **Production:** runs automatically on container start; to run it by hand: `docker compose ... exec my-bmad prisma migrate deploy` (the image has no pnpm or npx). Never use `migrate dev` in production
 - **After schema changes:** `pnpm prisma generate` to regenerate the client
 
 ## Testing

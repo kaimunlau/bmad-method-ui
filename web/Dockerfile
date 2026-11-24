@@ -12,7 +12,8 @@ FROM base AS deps
 WORKDIR /app
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY prisma ./prisma
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile \
+  && node -p 'require("prisma/package.json").version' > /prisma-version
 
 # --- Build ---
 FROM base AS builder
@@ -29,14 +30,15 @@ RUN pnpm build
 
 # --- Prisma CLI (runtime migrations) ---
 # Installed with npm into a flat node_modules (pnpm's symlinked layout does not
-# survive being copied out). The prisma version and the security overrides are
-# read from package.json so they stay in step with the lockfile. npm may skip
-# install scripts, so the engines are fetched explicitly: the runtime user must
-# never have to write into this root-owned tree.
+# survive being copied out). prisma is pinned to the exact version the lockfile
+# installed in `deps`; the security overrides from package.json set floors for
+# its transitive deps. npm may skip install scripts, so the engines are fetched
+# explicitly: the runtime user must never have to write into this root-owned tree.
 FROM node:24-alpine AS prisma-cli
 WORKDIR /prisma-cli
 COPY package.json /tmp/app-package.json
-RUN node -e 'const app = require("/tmp/app-package.json"); require("fs").writeFileSync("package.json", JSON.stringify({ private: true, dependencies: { prisma: app.devDependencies.prisma }, overrides: app.pnpm.overrides }))' \
+COPY --from=deps /prisma-version /tmp/prisma-version
+RUN node -e 'const fs = require("fs"); const app = require("/tmp/app-package.json"); fs.writeFileSync("package.json", JSON.stringify({ private: true, dependencies: { prisma: fs.readFileSync("/tmp/prisma-version", "utf8").trim() }, overrides: app.pnpm.overrides }))' \
   && npm install --omit=dev --no-audit --no-fund \
   && node node_modules/@prisma/engines/scripts/postinstall.js \
   && npm cache clean --force
