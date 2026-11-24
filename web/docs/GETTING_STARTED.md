@@ -4,8 +4,8 @@ Step-by-step guide to run MyBMAD Dashboard locally.
 
 ## Prerequisites
 
-- **Node.js** 20+
-- **pnpm** 9+
+- **Node.js** 22+
+- **pnpm** 10+
 - **Docker** (for PostgreSQL, or use your own PostgreSQL 15+ instance)
 - A **GitHub OAuth App** — optional, only needed for GitHub login ([create one here](https://github.com/settings/developers))
 - A **GitHub Personal Access Token** — optional but recommended for rate limits when importing GitHub repos

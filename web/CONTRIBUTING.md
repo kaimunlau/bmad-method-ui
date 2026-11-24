@@ -42,8 +42,8 @@ This project follows a [Code of Conduct](./CODE_OF_CONDUCT.md). By participating
 
 ### Requirements
 
-- Node.js 20+
-- pnpm 9+
+- Node.js 22+
+- pnpm 10+
 - PostgreSQL 15+ (or Docker)
 
 ### Steps

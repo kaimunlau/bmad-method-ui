@@ -1,5 +1,5 @@
 import { Octokit } from "@octokit/rest";
-import { throttling } from "@octokit/plugin-throttling";
+import { throttling, type ThrottlingOptions } from "@octokit/plugin-throttling";
 import { retry } from "@octokit/plugin-retry";
 import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/db/client";
@@ -13,9 +13,10 @@ const OctokitWithPlugins = Octokit.plugin(throttling, retry);
  * Create an Octokit instance authenticated with a user's OAuth token.
  */
 export function createUserOctokit(accessToken: string) {
-  return new OctokitWithPlugins({
-    auth: accessToken,
-    throttle: {
+  // Typed explicitly: Octokit.plugin() loses contextual typing for plugin
+  // options when @octokit/core and its plugins resolve different
+  // @octokit/types majors.
+  const throttle: ThrottlingOptions = {
       onRateLimit: (retryAfter, options, octokit, retryCount) => {
         octokit.log.warn(
           `Rate limit hit for ${options.method} ${options.url}`
@@ -32,8 +33,9 @@ export function createUserOctokit(accessToken: string) {
         );
         return false;
       },
-    },
-  });
+  };
+
+  return new OctokitWithPlugins({ auth: accessToken, throttle });
 }
 
 /**

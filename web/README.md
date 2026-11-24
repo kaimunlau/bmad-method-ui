@@ -159,7 +159,7 @@ See the full guide in [`docker/DEPLOY.md`](./docker/DEPLOY.md).
 2. Create `.env` and `.env.local` from `.env.example`
 3. Create the external Docker network: `docker network create web`
 4. Launch: `docker compose --env-file .env -f docker/docker-compose.prod.yml up -d`
-5. Run migrations: `docker compose ... exec my-bmad npx prisma migrate deploy`
+5. Run migrations: `docker compose ... exec my-bmad prisma migrate deploy`
 
 The stack includes:
 - **Next.js** application container

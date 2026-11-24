@@ -61,7 +61,7 @@ docker compose --env-file .env -f docker/docker-compose.prod.yml up -d
 After the first deployment or after a Prisma schema update:
 
 ```bash
-docker compose --env-file .env -f docker/docker-compose.prod.yml exec my-bmad npx prisma migrate deploy
+docker compose --env-file .env -f docker/docker-compose.prod.yml exec my-bmad prisma migrate deploy
 ```
 
 This command applies pending migrations to the production database. It must be run:
@@ -101,7 +101,7 @@ Certificates are automatically obtained and renewed by Traefik via the TLS chall
 docker compose --env-file .env -f docker/docker-compose.prod.yml up -d --build my-bmad
 
 # Apply migrations if the schema has changed
-docker compose --env-file .env -f docker/docker-compose.prod.yml exec my-bmad npx prisma migrate deploy
+docker compose --env-file .env -f docker/docker-compose.prod.yml exec my-bmad prisma migrate deploy
 ```
 
 ## 7. Shutdown

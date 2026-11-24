@@ -5,6 +5,16 @@ import nextTs from "eslint-config-next/typescript";
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
+  // eslint-plugin-react-hooks 7.1 (via eslint-config-next 16.4) made
+  // set-state-in-effect an error. These two pre-existing sites still need a
+  // refactor; keep them visible as warnings until then.
+  {
+    files: [
+      "src/app/(dashboard)/profile/page.tsx",
+      "src/components/ui/sidebar.tsx",
+    ],
+    rules: { "react-hooks/set-state-in-effect": "warn" },
+  },
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:
